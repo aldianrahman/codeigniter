@@ -54,12 +54,12 @@
             <div class="inner">
               <h3><?php echo $count_user ?></h3>
 
-              <p>User Registrations</p>
+              <p>Karyawan Aktif</p>
             </div>
             <div class="icon">
               <i class="ion ion-person-add"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="<?php echo base_url()."karyawan/list" ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->

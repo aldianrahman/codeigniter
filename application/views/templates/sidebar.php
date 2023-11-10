@@ -15,97 +15,65 @@
       <!-- search form -->
       <form action="#" method="get" class="sidebar-form">
         <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
+          <input type="text" name="q" class="form-control" placeholder="Search..." readonly>
           <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                <button disabled type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
                 </button>
               </span>
         </div>
       </form>
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
+
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <li>
-          <a href="<?php echo base_url()?>">
-            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-            <span class="pull-right-container">
-              <!-- <small class="label pull-right bg-green">new</small> -->
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="<?php echo base_url()?>karyawan/list">
-            <i class="fa fa-user"></i> <span>Karyawan</span>
-            <span class="pull-right-container">
-              <small class="label pull-right bg-green">new</small>
-            </span>
-          </a>
-        </li>
 
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-th"></i> <span>Database</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li class="active"><a href="<?php echo base_url()?>karyawan/jabatan">
-              <i class="fa fa-circle-o"></i>
-              <small class="label pull-right bg-green">new
-              </small>Jabatan</a>
-            </li>
-            <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-          </ul>
-        </li>
+        <?php foreach($sidebar as $s): ?>
+
+          <li>
+            <?php if ($s->parrent == 1): ?>
+              <li class="treeview">
+                <a href="<?php echo $s->path ?>">
+                  <i class="<?php echo $s->icon ?>"></i>
+                  <span><?php echo $s->desc_sidebar ?></span>
+                  <span class="pull-right-container">
+                    <span class="label label-primary pull-right"><?php echo $notif_sidebar ?></span>
+                  </span>
+                </a>
+                <?php if ($s->id_sidebar == 3) : // Check if it's the "Database" item ?>
+                  <ul class="treeview-menu">
+                    <?php foreach ($sidebar as $child) : ?>
+                      <?php if ($child->parrent_id == 3) : // Check if it's a child of "Database" ?>
+                        <li>
+                          <a href="<?php echo base_url() . $child->path; ?>">
+                            <i class="<?php echo $child->icon; ?>"></i> <?php echo $child->desc_sidebar; ?>
+                          </a>
+                        </li>
+                      <?php endif; ?>
+                    <?php endforeach; ?>
+                  </ul>
+                <?php endif; ?>
+              </li>
+            <?php elseif($s->parrent_id==0): ?>
+              <a href="<?php echo base_url() . $s->path; ?>">
+                <i class="<?php echo $s->icon ?>"></i> <span><?php echo $s->desc_sidebar ?></span>
+                <span class="pull-right-container">
+                <!-- <small class="label pull-right bg-green">new</small> -->
+                </span>
+              </a>
+            <?php endif; ?>
+
+          
+          </li>
+        <?php endforeach; ?>
+
+
         
-        <!-- <li class="active treeview">
-          <a href="#">
-            <i class="fa fa-files-o"></i>
-            <span>Layout Options</span>
-            <span class="pull-right-container">
-              <span class="label label-primary pull-right">4</span>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="<?php echo base_url()?>assets/pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
-            <li><a href="<?php echo base_url()?>assets/pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
-            <li><a href="<?php echo base_url()?>assets/pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
-            <li><a href="<?php echo base_url()?>assets/pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
-          </ul>
-        </li> -->
-        <!-- <li class="active treeview">
-          <a href="#">
-            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-          </a>
-        </li>
-        <li class="active treeview">
-          <a href="#">
-            <i class="fa fa-book"></i> <span>Customer</span>
-          </a>
-        </li>
-        <li class="active treeview">
-          <a href="#">
-            <i class="fa fa-university"></i> <span>Supplier</span>
-          </a>
-        </li>
-        <li class="active treeview">
-          <a href="#">
-            <i class="fa fa-user"></i> <span>Karyawan</span>
-          </a>
-        </li>
-        <li class="active treeview">
-          <a href="#">
-            <i class="fa fa-lock"></i> <span>Ganti Password</span>
-          </a>
-        </li>
-        <li class="active treeview">
-          <a href="#">
-            <i class="fa fa-sign-out"></i> <span>Logout</span>
-          </a>
-        </li> -->
+
       </ul>
+
+      
     </section>
     <!-- /.sidebar -->
   </aside>

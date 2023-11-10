@@ -32,23 +32,23 @@
       </div>
     </div>
 
-    <script>
-      function validateForm() {
-      var jabatan = document.getElementById("desc_jabatan").value;
-      var gaji = document.getElementById("gaji_jabatan").value;
+<script>
+  function validateForm() {
+  var jabatan = document.getElementById("desc_jabatan").value;
+  var gaji = document.getElementById("gaji_jabatan").value;
 
-      if (jabatan === "") {
-        alert("Harap isi Jabatan");
-        return false; // Menghentikan pengiriman formulir jika ada bidang yang kosong
-      }else if(gaji === ""){
-        alert("Harap isi Gaji");
-        return false;
-      }
+  if (jabatan === "") {
+    alert("Harap isi Jabatan");
+    return false; // Menghentikan pengiriman formulir jika ada bidang yang kosong
+  }else if(gaji === ""){
+    alert("Harap isi Gaji");
+    return false;
+  }
 
-      // Lanjutkan dengan pengiriman formulir jika semua bidang terisi
-      return true;
-      }
-    </script>
+  // Lanjutkan dengan pengiriman formulir jika semua bidang terisi
+  return true;
+  }
+</script>
 
     
 
