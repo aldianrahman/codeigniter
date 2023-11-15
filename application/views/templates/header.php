@@ -43,7 +43,7 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="<?php echo base_url() ?>" class="logo">
+    <a href="<?php echo base_url().'admin/index' ?>" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>B</b>IG</span>
       <!-- logo for regular state and mobile devices -->
@@ -135,6 +135,9 @@
               <li class="footer"><a href="#">See All Messages</a></li>
             </ul>
           </li>
+
+          
+          
           <!-- Notifications: style can be found in dropdown.less -->
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -255,20 +258,103 @@
               </li>
             </ul>
           </li>
+          <li class="dropdown messages-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-user"></i>
+              <span class="label label-info"><?php echo $count_user_online ?></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="header">Karyawan Online : <?php echo $count_user_online ?></li>
+              <li>
+                <!-- inner menu: contains the actual data -->
+                <ul class="menu">
+                  <?php foreach($karyawan_online as $c): ?>
+                  <li><!-- start message -->
+                    <a href="#">
+                      <div class="pull-left">
+                        <img src="<?php echo base_url()?>assets/foto_karyawan/<?php echo $c->foto_karyawan ?>" class="img-circle" alt="User Image">
+                      </div>
+                      <h4>
+                      <i class="fa fa-circle text-success"></i> <?php echo $c->nama_karyawan ?>
+                        <small><i class="fa fa-clock-o"></i> 
+                      <?php
+                     
+                    //  date_default_timezone_set("America/New_York");
+                    //   echo "The time is " . date("Y-m-d H:i:s");
+
+                      date_default_timezone_set("Asia/Jakarta");
+
+
+                        
+                      $awal   = strtotime($c->last_login); //lebih rendah
+                      $akhir  = strtotime(date("Y-m-d H:i:s")); //lebih tinggi
+                      $diff  = $akhir - $awal;
+
+                      
+
+                      // echo intval($menit/60)." Menit";
+                      $minutes = intval($diff/60);
+
+                      if ($minutes > 60) {
+                        // Check if it's more than 24 hours
+                        if ($minutes > 1440) { // 24 hours * 60 minutes
+                            // More than 24 hours
+                            $timeDifference = floor($minutes / 1440) . ' days';
+                          echo $timeDifference;
+
+                        } else {
+                            // More than 60 minutes but less than 24 hours
+                            $timeDifference = floor($minutes / 60) . ' hours';
+                          echo $timeDifference;
+
+                        }
+                    } else {
+                        // Less than or equal to 60 minutes
+                        if($minutes == 0){
+                          echo "now";
+                        }else{
+                          $timeDifference = $minutes . ' minutes';
+                          echo $timeDifference;
+                        }
+                    }
+
+                      ?>
+                      </small>
+                      </h4>
+                      <p><?php echo $c->desc_jabatan ?></p>
+                    </a>
+                  </li>
+                  <?php endforeach;?>
+                </ul>
+              </li>
+            </ul>
+          </li>
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
+            <?php if($this->session->userdata('id_karyawan'))?>
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="<?php echo base_url()?>assets/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-              <span class="hidden-xs">Alexander Pierce</span>
+              <img src="<?php echo base_url()?>assets/foto_karyawan/<?php echo $ui_karyawan->foto_karyawan ?>" class="user-image" alt="User Image">
+              <span class="hidden-xs"><?php echo $ui_karyawan->nama_karyawan ?></span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="<?php echo base_url()?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="<?php echo base_url()?>assets/foto_karyawan/<?php echo $ui_karyawan->foto_karyawan ?>" class="img-circle" alt="User Image">
 
                 <p>
-                  Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2012</small>
+                  <?php echo $ui_karyawan-> nama_karyawan." <br> ".$ui_karyawan->desc_jabatan ?>
+                  <small><?php 
+                  
+                  $tanggal_waktu = $ui_karyawan->created_at;
+
+                  // Ubah format menggunakan fungsi date
+                  $format_baru = date("l, j F Y H:i:s", strtotime($tanggal_waktu));
+
+                  // Tampilkan hasil
+                  echo $format_baru;
+                  
+                  
+                  ?></small>
                 </p>
               </li>
               <!-- Menu Body -->
@@ -292,7 +378,7 @@
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="<?php echo base_url().'auth/logout'?>" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>

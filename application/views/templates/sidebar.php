@@ -5,11 +5,21 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="<?php echo base_url()?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="<?php echo base_url()?>assets/foto_karyawan/<?php echo $ui_karyawan->foto_karyawan ?>" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>Alexander Pierce</p>
+          <p><?php echo $ui_karyawan->nama_karyawan ?></p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+          <br>
+          <?php 
+          $format_baru = date("j F Y H:i", strtotime($ui_karyawan->last_login));
+
+          // Tampilkan hasil
+          echo $format_baru;
+          
+          ?>
+          
+          
         </div>
       </div>
       <!-- search form -->

@@ -2,9 +2,16 @@
 
     class M_sidebar extends CI_Model{
 
-        public function data_sidebar(){
+        public function data_sidebar($role_user){
+            
+            $where = array(
+                'status_sidebar' => 1,
+                'show_to_role_karyawan' => $role_user
+            );
 
-            $this->db->where('status_sidebar',1);
+            $this->db->select('*');
+            $this->db->where($where);
+
             $query = $this->db->get('tb_sidebar');
             return $query;
 

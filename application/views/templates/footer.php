@@ -3,7 +3,7 @@
     <div class="pull-right hidden-xs">
       <b>Version</b> 2.4.0
     </div>
-    <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+    <strong>Copyright &copy; 2023 <a href="https://www.luby.co.id/">PT Berdikari Inti Gemilang</a>.</strong> All rights
     reserved.
   </footer>
 

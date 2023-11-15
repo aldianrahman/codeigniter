@@ -1,5 +1,11 @@
 <div class="content-wrapper">
+        <ol class="breadcrumb">
+            <li><a href="<?php echo base_url('admin/karyawan')?>"><i class="fa fa-dashboard"></i> Profile</a></li>
+            <li class="active">Detail Data Karyawan</li>
+        </ol>
     <section class="content">
+    <?php echo $this->session->flashdata('message_update_karyawan'); ?>
+
         <h4><strong>Detail Data Karyawan</strong></h4>
 
         <table class="table">
@@ -44,7 +50,13 @@
             </tr>
 
         </table>
+        
+        <?php if ($karyawan->role_user != 1): ?>
+            <?php echo anchor('karyawan/print_detail/'.$karyawan->id_karyawan,'Print Karyawan', 'class="btn btn-danger"') ?>
+            <?php echo anchor('karyawan/edit/'.$karyawan->id_karyawan,'Ubah Data', 'class="btn btn-primary"') ?>
+        <?php else: ?>
+            <a href="<?php echo base_url('karyawan') ?>" class="btn btn-primary">Kembali</a>
+        <?php endif; ?>
 
-        <a href="<?php echo base_url('karyawan/list') ?>" class="btn btn-primary">Kembali</a>
     </section>
 </div>

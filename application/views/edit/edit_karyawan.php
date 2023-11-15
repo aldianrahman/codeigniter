@@ -1,10 +1,20 @@
 <div class="content-wrapper">
     <section class="content">
     <h4><strong>Edit Data Karyawan</strong></h4>
+    
+    <?php $role_user = $this->session->userdata('role_user'); ?>
+
+        <?php if ($role_user != 1): ?>
+            <form action="<?php echo base_url().'karyawan/update_karyawan'; ?>" method="post">
+        <?php else: ?>
+            <form action="<?php echo base_url().'karyawan/update'; ?>" method="post">
+        <?php endif; ?>
+
+
+
 
     <?php foreach ($karyawan as $krw) :?>
 
-        <form action="<?php echo base_url().'karyawan/update'; ?>" method="post">
 
         <div class="form-group">
             <img src="<?php echo base_url(); ?>assets/foto_karyawan/<?php echo $krw->foto_karyawan; ?>" width="90" height="110">
@@ -20,7 +30,7 @@
 
         <div class="form-group">
             <label for="">Email Karyawan</label>
-            <input type="text" name="email_karyawan" class="form-control" value="<?php echo $krw->email_karyawan ?>" id="">
+            <input type="text" name="email_karyawan" class="form-control" value="<?php echo $krw->email_karyawan ?>" id="" readonly>
         </div>
 
         <div class="form-group">
@@ -51,8 +61,18 @@
         <?php endforeach;?>
 
         <!-- <button class="btn btn-danger" onclick=\"location.href='" . base_url() . "karyawan/aktivasi_karyawan/" . $nik . "'\">Kembali</button> -->
-        <a href="<?php echo base_url('karyawan/list') ?>" class="btn btn-danger">Kembali</a>
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        
+
+        <?php if ($role_user != 1): ?>
+            <a href="<?php echo base_url('admin/karyawan') ?>" class="btn btn-danger">Kembali</a>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        <?php else: ?>
+            <a href="<?php echo base_url('karyawan') ?>" class="btn btn-danger">Kembali</a>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        <?php endif; ?>
+
+
+        
 
         </form>
 
