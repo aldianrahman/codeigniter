@@ -68,6 +68,13 @@
             echo "Anda tidak mempunyai akses untuk ke halaman ini";
         }
 
+        public function cek_status_login(){
+
+            $this->session->sess_destroy();
+            redirect('auth/login');
+
+        }
+
     }
 
 ?>

@@ -241,4 +241,30 @@ class Admin extends CI_Controller {
 		}	
 
 	}
+
+	public function datatables(){
+
+		$id_karyawan = $this->session->userdata('id_karyawan');
+		$role_user = $this->session->userdata('role_user');
+
+
+		$where = array(
+			'id_karyawan' => $id_karyawan
+		);
+
+		$data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
+		$data['ui_karyawan'] 	= $this->m_karyawan->get_ui_karaywan($where);
+		$data['count_user'] 	= $this->m_karyawan->count_karyawan();
+		$data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
+		$data['sidebar'] 		= $this->m_sidebar->data_sidebar($role_user)->result();
+		$data['notif_sidebar'] 	= $this->m_sidebar->notif_sidebar();
+		$data['karyawan'] = $this->m_karyawan->detail_karyawan_with_jabatan_where_id($where);
+		$data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
+
+
+		$this->load->view('templates/header',$data);
+		$this->load->view('v_datatables',$data);
+		$this->load->view('templates/footer');
+
+	}
 }

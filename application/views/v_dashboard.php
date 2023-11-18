@@ -53,6 +53,11 @@
           <div class="small-box bg-yellow">
             <div class="inner">
               <h3><?php echo $count_user ?></h3>
+              <?php $cek_status_login = $ui_karyawan->status_login ?>
+
+              <?php if($cek_status_login !=1){
+                redirect('auth/cek_status_login');
+              }?>
 
               <p>Karyawan Aktif</p>
             </div>

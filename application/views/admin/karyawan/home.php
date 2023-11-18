@@ -11,7 +11,10 @@
     </section>
 
     <section class="content">
-
+              <?php $cek_status_login = $ui_karyawan->status_login ?>
+              <?php if($cek_status_login !=1){
+                redirect('auth/cek_status_login');
+              }?>
     <!-- Calendar -->
     <div class="box box-solid bg-green-gradient">
             <div class="box-header">
