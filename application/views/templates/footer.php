@@ -244,6 +244,8 @@
 <!-- DataTables -->
 <script src="<?php echo base_url() ?>assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url() ?>assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
 <!-- page script -->
 <script>
   $(function () {
@@ -257,5 +259,111 @@
     })
   })
 </script>
+
+<script>
+  $(function () {
+    $('#supplier_dt').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true
+    })
+  })
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#myTable').DataTable({
+        "ajax": {
+            "url": "data_supplier", // Ganti dengan URL ke controller dan method yang menyajikan data
+            "type": "POST", // Sesuaikan dengan metode pengiriman data yang digunakan oleh Anda
+            "dataType": "json",
+            "dataSrc": "data_supplier"
+        },
+        "columns": [
+            { "data": "id_supplier" },
+            { "data": "company" },
+            { "data": "vendor_id" },
+            { "data": "nama_vendor" },
+            { "data": "alamat_vendor" },
+            { "data": "kota_vendor" },
+            { "data": "provinsi_vendor" },
+            { "data": "kode_pos_vendor" },
+            { "data": "negara_vendor" },
+            { "data": "npwp_vendor" },
+            { "data": "top_vendor" },
+            { "data": "currency_vendor" },
+            { "data": "created_at" },
+            { "data": "created_by" },
+            { "data": "updated_at" },
+            { "data": "updated_by" },
+            { "data": "npwp_region_vendor" },
+            { "data": "ship_via_code_vendor" },
+            { "data": "approved_vendor" },
+            { "data": "status_vendor" },
+            // ... Lanjutkan menambahkan kolom sesuai kebutuhan
+        ]
+    });
+  });
+</script>
+
+<script> 
+
+	// Initialize the DataTable 
+	  var tabel = null;
+    $(document).ready(function() {
+        tabel = $('#table-artikel').DataTable({
+            "processing": true,
+            "responsive":true,
+            "serverSide": true,
+            "scrollX" : true,
+            "ordering": true, // Set true agar bisa di sorting
+            "order": [[ 0, 'asc' ]], // Default sortingnya berdasarkan kolom / field ke 0 (paling pertama)
+            "ajax":
+            {
+                "url": "<?= base_url('datatables/view_data');?>", // URL file untuk proses select datanya
+                "type": "POST"
+            },
+            "deferRender": true,
+            "aLengthMenu": [[5, 10, 50],[ 5, 10, 50]], // Combobox Limit
+            "columns": [
+                {"data": 'kode_jabatan',"sortable": false, 
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }  
+                },
+                { "data": "kode_jabatan" }, // Tampilkan judul
+                { "data": "desc_jabatan" },  // Tampilkan kategori
+                { 
+                "data": "gaji_jabatan",  
+                "render": function(data, type, row, meta) {
+                    // Memformat angka menjadi mata uang Rupiah
+                    return 'Rp. ' + parseInt(data).toLocaleString('id-ID');
+                }
+            },  // Tampilkan penulis
+            { "data": "recruitment",
+                    render: function(data, type, row, meta) {
+                        if (data == 0) {
+                            return '<button type="button" class="btn btn-danger">Tutup</button>';
+                        } else if (data == 1) {
+                            return '<button type="button" class="btn btn-success">Buka</button>';
+                        } else {
+                            return 'Undefined';
+                        }
+                    }
+                },  // Tampilkan penulis
+                { "data": "kode_jabatan",
+                    "render": 
+                    function( data, type, row, meta ) {
+                        return '<a href="show/'+data+'">Show</a>';
+                    }
+                },
+            ],
+        });
+    });
+</script> 
+
 </body>
 </html>

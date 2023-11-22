@@ -32,6 +32,7 @@
                         $data['notif_sidebar'] = $this->m_sidebar->notif_sidebar();
                         $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
                         $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
+                        $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
 
 
                         
@@ -68,6 +69,7 @@
                         $data['notif_sidebar'] = $this->m_sidebar->notif_sidebar();
                         $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
                         $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
+                        $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
         
         
         
@@ -271,6 +273,9 @@
                     $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
                     $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
 
+                    
+                    $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
+
                 
                     
                     $this->load->view('templates/header',$data);;
@@ -402,6 +407,9 @@
                     $data['notif_sidebar'] = $this->m_sidebar->notif_sidebar();
                     $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
                     $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
+
+                    
+                    $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
 
 
                     
@@ -570,6 +578,9 @@
                     $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
                     $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
 
+                    
+                    $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
+
 
                     
                     $this->load->view('templates/header',$data);;
@@ -578,6 +589,174 @@
                     $this->load->view('templates/footer');
                 }
 
+
+        }
+
+        public function profile($id){
+
+            $id_karyawan = $this->session->userdata('id_karyawan');
+            $role_user = $this->session->userdata('role_user');
+            
+            if ($id_karyawan === null) {
+                redirect('auth/login');
+            } else {
+
+                
+
+                    $where = array(
+                        'id_karyawan' => $id_karyawan
+                    );
+
+                    $where_data= array(
+                        'id_karyawan'=> $id
+                    );
+
+                    
+                    $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
+
+                    
+                    $data['ui_karyawan'] 	= $this->m_karyawan->get_ui_karaywan($where);
+                    
+                    $data['get_ui_profile'] 	= $this->m_karyawan->get_ui_profile($where_data);
+
+                    $data['sidebar'] = $this->m_sidebar->data_sidebar($role_user)->result();
+                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan();
+                    $data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
+                    $data['notif_sidebar'] = $this->m_sidebar->notif_sidebar();
+                    $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
+                    $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
+                    $data['about_me'] = $this->m_karyawan->about_me($where_data);
+                    
+                    $data['acc_friend'] = $this->m_karyawan->acc_friend($id_karyawan);
+
+                    $data['id_karyawan'] = $id_karyawan = $this->session->userdata('id_karyawan');
+
+                    if($id == $id_karyawan){
+                        $data['hide_setting'] = true;
+                    }else{
+                        $data['hide_setting'] = false;
+                    }
+
+
+
+                    
+                    $this->load->view('templates/header',$data);
+                    $this->load->view('templates/sidebar',$data);
+                    $this->load->view('v_profile',$data);
+                    $this->load->view('templates/footer');
+                    $this->load->view('modal/input_karyawan');
+
+                
+
+            }
+
+
+        }
+
+        public function search_profile(){
+
+            $id_karyawan = $this->session->userdata('id_karyawan');
+            $role_user = $this->session->userdata('role_user');
+            
+            if ($id_karyawan === null) {
+                redirect('auth/login');
+            } else {
+
+
+
+                $keyword = $this->input->post('keyword');
+                // echo $keyword;
+
+                $data = $this->m_karyawan->search_id($keyword);
+
+                if($data == 'false'){
+                    $this->session->set_flashdata('message_profile_not_found','
+                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                                    </button>
+                                    Profil tidak ditemukan!
+                                </div>
+                                ');
+                                redirect('karyawan/profile/'.$id_karyawan);
+                }else{
+                    redirect('karyawan/profile/'.$data);
+                }
+            }
+        }
+
+        public function insert_about_me(){
+
+            $id_karyawan = $this->session->userdata('id_karyawan');
+
+
+            $pendidikan_karyawan = $this->input->post('pendidikan_karyawan');
+            $lokasi_karyawan = $this->input->post('lokasi_karyawan');
+            $skill_karyawan = $this->input->post('skill_karyawan');
+            $note_karyawan = $this->input->post('note_karyawan');
+
+            echo $pendidikan_karyawan.'<br>';
+            echo $lokasi_karyawan.'<br>';
+            echo $skill_karyawan.'<br>';
+            echo $note_karyawan.'<br>';
+
+            $data = array(
+                'id_karyawan' => $id_karyawan,
+                'pendidikan_karyawan' => $pendidikan_karyawan,
+                'lokasi_karyawan' => $lokasi_karyawan,
+                'skill_karyawan' => $skill_karyawan,
+                'note_karyawan' => $note_karyawan
+            );
+
+            $this->m_karyawan->input_about_me($data);
+            redirect('karyawan/profile/'.$id_karyawan);
+            
+
+        }
+
+        public function update_about_me(){
+
+            $id_karyawan = $this->session->userdata('id_karyawan');
+
+
+            $pendidikan_karyawan = $this->input->post('pendidikan_karyawan');
+            $lokasi_karyawan = $this->input->post('lokasi_karyawan');
+            $skill_karyawan = $this->input->post('skill_karyawan');
+            $note_karyawan = $this->input->post('note_karyawan');
+
+            $where = array(
+                'id_karyawan' => $id_karyawan
+            );
+
+            $data = array(
+                'pendidikan_karyawan' => $pendidikan_karyawan,
+                'lokasi_karyawan' => $lokasi_karyawan,
+                'skill_karyawan' => $skill_karyawan,
+                'note_karyawan' => $note_karyawan
+            );
+
+            if( $this->m_karyawan->update_about_me($where,$data) ){
+                redirect('karyawan/profile/'.$id_karyawan);
+            }else{
+                echo "Update Gagal!";
+            }
+            
+
+        }
+
+        public function tambah_teman($id){
+
+            $id_karyawan = $this->session->userdata('id_karyawan');
+
+
+            // echo "Id Teman : ".$id .'<br>';
+            // echo "Id Saya : ".$id_karyawan;
+            $status = 2;
+
+            if($this->m_karyawan->tambah_teman($id_karyawan,$id,$status)){
+                redirect('karyawan/profile/'.$id_karyawan);
+            }
+            
+            
 
         }
 

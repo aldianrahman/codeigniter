@@ -44,6 +44,14 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select name="role" id="role" class="form-control">
+                        <option value=1><?php echo "ADMIN" ?></option>
+                        <option value=2><?php echo "USER" ?></option>
+                </select>
+            </div>
+
             <button type="reset" class="btn btn-danger" data-dismiss="modal">Reset</button>
             <button type="submit" class="btn btn-primary">Simpan</button>
             </form>

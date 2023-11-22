@@ -60,6 +60,8 @@ class Admin extends CI_Controller {
 					redirect('auth/login');
 				}
 
+				$data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
+
 				$where = array(
 					'id_karyawan' => $id_karyawan
 				);
@@ -70,6 +72,7 @@ class Admin extends CI_Controller {
 				$data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
 				$data['sidebar'] 		= $this->m_sidebar->data_sidebar($role_user)->result();
 				$data['notif_sidebar'] 	= $this->m_sidebar->notif_sidebar();
+				$data['count_supplier'] = $this->m_data->count_supplier();
 
 				$this->load->view('templates/header',$data);
 				$this->load->view('templates/sidebar',$data);
@@ -97,6 +100,8 @@ class Admin extends CI_Controller {
 				// Redirect atau melakukan operasi lain setelah sesi berakhir
 				redirect('auth/login');
 			}
+
+			$data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
 
 			$where = array(
 				'id_karyawan' => $id_karyawan
@@ -128,6 +133,8 @@ class Admin extends CI_Controller {
 			if($role_user != 1){
 				redirect('auth/login');
 			}else{
+
+				$data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
 
 				$where = array(
 					'id_karyawan' => $id_karyawan
@@ -165,12 +172,14 @@ class Admin extends CI_Controller {
 			$path 			= $this->input->post('path');
 			$icon 			= $this->input->post('icon');
 			$parrent 		= $this->input->post('parrent');
+			$role 			= $this->input->post('role');
 			$parrent_id 	= $this->input->post('parrent_id');
 
 			$data = array(
 				'desc_sidebar' 		=> $desc,
 				'path' 				=> $path,
 				'icon'				=> $icon,
+				'show_to_role_karyawan'				=> $role,
 				'parrent'			=> $parrent,
 				'parrent_id'		=> $parrent_id,
 				'status_sidebar'	=> 1
@@ -233,6 +242,7 @@ class Admin extends CI_Controller {
 			$data['sidebar'] 		= $this->m_sidebar->data_sidebar($role_user)->result();
 			$data['notif_sidebar'] 	= $this->m_sidebar->notif_sidebar();
 			$data['karyawan'] = $this->m_karyawan->detail_karyawan_with_jabatan_where_id($where);
+			$data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
 
 			$this->load->view('templates/header',$data);
 			$this->load->view('templates/sidebar',$data);
@@ -260,6 +270,7 @@ class Admin extends CI_Controller {
 		$data['notif_sidebar'] 	= $this->m_sidebar->notif_sidebar();
 		$data['karyawan'] = $this->m_karyawan->detail_karyawan_with_jabatan_where_id($where);
 		$data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
+		$data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
 
 
 		$this->load->view('templates/header',$data);

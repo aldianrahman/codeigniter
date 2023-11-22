@@ -3,11 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Data Tables</title>
+  <title>AdminLTE 2 | Dashboard</title>
+  <style>
+        #tableID {
+            width: 100%; /* Atur lebar tabel sesuai kebutuhan */
+        }
+    </style>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="<?php echo base_url() ?>assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   <!-- Bootstrap 3.3.7 -->
   <link rel="stylesheet" href="<?php echo base_url()?>assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
@@ -24,11 +27,11 @@
   <!-- jvectormap -->
   <link rel="stylesheet" href="<?php echo base_url()?>assets/bower_components/jvectormap/jquery-jvectormap.css">
   <!-- Date Picker -->
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/bower_components/bootstrap-datepicker/<?php echo base_url()?>assets/dist/css/bootstrap-datepicker.min.css">
   <!-- Daterange picker -->
   <link rel="stylesheet" href="<?php echo base_url()?>assets/bower_components/bootstrap-daterangepicker/daterangepicker.css">
   <!-- bootstrap wysihtml5 - text editor -->
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -38,8 +41,24 @@
   <![endif]-->
 
   <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+   <!-- jQuery -->
+   <script type="text/javascript" 
+          src="https://code.jquery.com/jquery-3.5.1.js"> 
+  </script> 
+  
+  <!-- DataTables CSS -->
   <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        href= 
+"https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css"> 
+  
+  <!-- DataTables JS -->
+  <script src= 
+"https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"> 
+  </script>
+  
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -273,7 +292,7 @@
                 <ul class="menu">
                   <?php foreach($karyawan_online as $c): ?>
                   <li><!-- start message -->
-                    <a href="#">
+                    <a href="<?php echo base_url() ?>karyawan/profile/<?php echo $c->id_karyawan ?>">
                       <div class="pull-left">
                         <img src="<?php echo base_url()?>assets/foto_karyawan/<?php echo $c->foto_karyawan ?>" class="img-circle" alt="User Image">
                       </div>
@@ -332,6 +351,45 @@
               </li>
             </ul>
           </li>
+          <li class="dropdown messages-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-plus"></i>
+              <span class="label label-default"><?php echo $count_acc_friend ?></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="header">Menunggu Pertemanan : <?php echo $count_acc_friend ?></li>
+              <li>
+                <!-- inner menu: contains the actual data -->
+                <ul class="menu">
+                  <?php foreach($acc_friend as $acc): ?>
+                    <?php if ($id_karyawan == $acc->id_karyawan_1): ?>
+                      <li><!-- start message -->
+                        <a href="<?php echo base_url() ?>karyawan/profile/<?php echo $acc->id_karyawan_2?>">
+                          <div class="pull-left">
+                            <img src="<?php echo base_url()?>assets/foto_karyawan/<?php echo $acc->foto_karyawan_2 ?>" class="img-circle" alt="User Image">
+                          </div>
+                          <h4>
+                          <?php echo $acc->nama_karyawan_2 ?>
+                          </h4>
+                        </a>
+                      </li>
+                    <?php else: ?>
+                      <li><!-- start message -->
+                        <a href="<?php echo base_url() ?>karyawan/profile/<?php echo $acc->id_karyawan_1 ?>">
+                          <div class="pull-left">
+                            <img src="<?php echo base_url()?>assets/foto_karyawan/<?php echo $acc->foto_karyawan_1 ?>" class="img-circle" alt="User Image">
+                          </div>
+                          <h4>
+                          <?php echo $acc->nama_karyawan_1 ?>
+                          </h4>
+                        </a>
+                      </li>
+                    <?php endif; ?>
+                  <?php endforeach;?>
+                </ul>
+              </li>
+            </ul>
+          </li>
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <?php if($this->session->userdata('id_karyawan'))?>
@@ -378,7 +436,7 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
+                  <a href="<?php echo base_url() ?>karyawan/profile/<?php echo $ui_karyawan->id_karyawan ?>" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
                   <a href="<?php echo base_url().'auth/logout'?>" class="btn btn-default btn-flat">Sign out</a>
