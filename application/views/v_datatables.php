@@ -112,30 +112,15 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-            <table id="datatables-dt" class="table table table-bordered table-hover">
+            <table id="datatables-dt" class="display nowrap" style="width: 100%">
                 <thead>
                 <tr>
                     <th>ID Jabatan</th>
                     <th>Keterangan Jabatan</th>
                     <th>Gaji</th>
                     <th>Recruitment</th>
-                    <th colspan="2">Aksi</th>
                 </tr>
                 </thead>
-                <tbody>
-                <?php
-                // Example data (replace this with your actual data)
-
-                // Loop through the data to populate the table rows
-                foreach ($jabatan as $row) {
-                    echo '<tr>';
-                    foreach ($row as $cell) {
-                    echo '<td>' . $cell . '</td>';
-                    }
-                    echo '</tr>';
-                }
-                ?>
-                </tbody>
             </table>
             </div>
             <!-- /.box-body -->

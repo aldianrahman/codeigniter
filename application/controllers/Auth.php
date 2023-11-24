@@ -1,6 +1,8 @@
 <?php
+    
+    require_once APPPATH . 'core/Master.php';
 
-    class Auth extends CI_Controller{
+    class Auth extends Master{
 
         public function login(){
 

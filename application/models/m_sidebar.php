@@ -3,11 +3,17 @@
     class M_sidebar extends CI_Model{
 
         public function data_sidebar($role_user){
-            
-            $where = array(
-                'status_sidebar' => 1,
-                'show_to_role_karyawan' => $role_user
-            );
+
+            if($role_user == 1){
+                $where = array(
+                    'status_sidebar' => 1,
+                );   
+            }else{
+                $where = array(
+                    'status_sidebar' => 1,
+                    'show_to_role_karyawan' => $role_user
+                );
+            }
 
             $this->db->select('*');
             $this->db->where($where);

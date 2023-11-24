@@ -65,17 +65,26 @@
 
 <script>
   function validateForm() {
-  var jabatan = document.getElementById("desc_sidebar").value;
-  var gaji = document.getElementById("path").value;
+  var keterangan = document.getElementById("desc_sidebar").value;
+  var path = document.getElementById("path").value;
   var icon = document.getElementById("icon").value;
   var parrent = document.getElementById("parrent").value;
-  var parrent = document.getElementById("parrent_id").value;
+  var parrent_id = document.getElementById("parrent_id").value;
 
-  if (jabatan === "") {
-    alert("Harap isi Jabatan");
+  if (keterangan === "") {
+    alert("Harap isi Keterangan");
     return false; // Menghentikan pengiriman formulir jika ada bidang yang kosong
-  }else if(gaji === ""){
-    alert("Harap isi Gaji");
+  }else if(path === ""){
+    alert("Harap isi Path");
+    return false;
+  }else if(icon === ""){
+    alert("Harap isi Icon");
+    return false;
+  }else if(parrent === ""){
+    alert("Harap isi Parrent");
+    return false;
+  }else if(parrent_id === ""){
+    alert("Harap isi Parrent Id");
     return false;
   }
 

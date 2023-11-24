@@ -1,6 +1,6 @@
 <?php
-
-    class Karyawan extends CI_Controller{
+    require_once APPPATH . 'core/Master.php';
+    class Karyawan extends Master{
 
         public function __construct()
 	 {
@@ -21,26 +21,35 @@
                         redirect('auth/login');
                     }else{
 
+                        $id_karyawan = $this->session->userdata('id_karyawan');
+                        $role_user = $this->session->userdata('role_user');
+                
+                
                         $where = array(
                             'id_karyawan' => $id_karyawan
                         );
-                        $data['ui_karyawan'] 	= $this->m_karyawan->get_ui_karaywan($where);
-
-                        $data['sidebar'] = $this->m_sidebar->data_sidebar($role_user)->result();
-                        $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan();
-                        $data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
-                        $data['notif_sidebar'] = $this->m_sidebar->notif_sidebar();
-                        $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
+                
                         $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
+                        $data['ui_karyawan'] 	= $this->m_karyawan->get_ui_karaywan($where);
+                        $data['count_user'] 	= $this->m_karyawan->count_karyawan();
+                        $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
+                        $data['sidebar'] 		= $this->m_sidebar->data_sidebar($role_user)->result();
+                        $data['notif_sidebar'] 	= $this->m_sidebar->notif_sidebar();
+                        $data['karyawan'] = $this->m_karyawan->detail_karyawan_with_jabatan_where_id($where);
+                        $data['data_supplier'] = $this->m_data->tampil_supplier()->result();
                         $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
-
-
+		                $data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
                         
+
+
+                
+                
                         $this->load->view('templates/header',$data);
                         $this->load->view('templates/sidebar',$data);
-                        $this->load->view('v_karyawan',$data);
+                        $this->load->view('v_karayawan_new');
                         $this->load->view('templates/footer');
-                        $this->load->view('modal/input_karyawan');
+                        $this->load->view('modal/input_karyawan',$data);
+
 
                     }
 
@@ -70,6 +79,8 @@
                         $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
                         $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
                         $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
+                        
+
         
         
         
@@ -167,123 +178,135 @@
         }
 
         public function tambah_jabatan(){
+            if($this->role_karyawan() == 1){
+                $this->goto_tambah_jabatan();
+            }else{
+                redirect('auth/login_exist');
+            } 
+        }
 
+        public function goto_tambah_jabatan(){
             $id_karyawan = $this->session->userdata('id_karyawan');
             if ($id_karyawan === null) {
-                    redirect('auth/login');
-                } else {
+                redirect('auth/login');
+            } else {
 
-                    $jabatan    = $this->input->post('desc_jabatan');
-                    $gaji       = $this->input->post('gaji_jabatan');
+                $jabatan    = $this->input->post('desc_jabatan');
+                $gaji       = $this->input->post('gaji_jabatan');
 
-                    $data       = array(
-                        'desc_jabatan' => $jabatan,
-                        'gaji_jabatan' => $gaji
-                    );
+                $data       = array(
+                    'desc_jabatan' => $jabatan,
+                    'gaji_jabatan' => $gaji
+                );
 
-                    $this->m_karyawan->input_jabatan($data,'tb_jabatan');
-                    $this->session->set_flashdata('message_tambah_jabatan','
-                                <div class="alert alert-success alert-dismissible" role="alert">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-                                    </button>
-                                    Data Berhasil Ditambahkan!
-                                </div>
-                                ');
-                    redirect('karyawan/jabatan');
-
-                }
-
+                $this->m_karyawan->input_jabatan($data,'tb_jabatan');
+                $this->session->set_flashdata('message_tambah_jabatan','
+                            <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                                </button>
+                                Data Berhasil Ditambahkan!
+                            </div>
+                            ');
+                redirect('karyawan/jabatan');
+            }
         }
 
         public function hapus($id){
 
-            $id_karyawan = $this->session->userdata('id_karyawan');
-            if ($id_karyawan === null) {
-                    redirect('auth/login');
-                } else {
-
-                    $data = array(
-                        'id_karyawan' => $id
-                    );
-
-                    if($this->m_karyawan->hapus($data,'tb_karyawan')){
-                        $this->session->set_flashdata('message_hapus_karyawan','
-                                <div class="alert alert-danger alert-dismissible" role="alert">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-                                    </button>
-                                    Data Berhasil Dihapus!
-                                </div>
-                                ');
-                        redirect('karyawan');
-                    }else{
-                        echo "Error Coding Hapus Karyawan";
-                    }
-
-                    // $where = array('id_karyawan' => $id);
-                    // $this->m_karyawan->hapus($where,'tb_karyawan');
-                    // redirect('karyawan');
-
+            if($this->role_karyawan() == 1){
+                $this->goto_hapus($id);
+            }else{
+                if($id == $this->id_karyawan()){
+                    $this->goto_hapus($id);
+                }else{
+                    redirect('auth/login_exist');
                 }
+            } 
                 
+        }
+
+        public function goto_hapus($id){
+            $data = array(
+                'id_karyawan' => $id
+            );
+
+            if($this->m_karyawan->hapus($data,'tb_karyawan')){
+                $this->session->set_flashdata('message_hapus_karyawan','
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                            </button>
+                            Data Berhasil Dihapus!
+                        </div>
+                        ');
+                redirect('karyawan');
+            }else{
+                echo "Gagal Hapus Karyawan";
+            }
         }
 
         public function aktivasi_karyawan($nik){
 
             $id_karyawan = $this->session->userdata('id_karyawan');
             if ($id_karyawan === null) {
-                    redirect('auth/login');
-                } else {
+                redirect('auth/login');
+            } else {
 
-                    $this->m_karyawan->aktivasi_karyawan('tb_karyawan',$nik);
-                    $this->session->set_flashdata('message_aktivasi_karyawan','
-                                <div class="alert alert-info alert-dismissible" role="alert">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-                                    </button>
-                                    Data Berhasil Diaktivasi!
-                                </div>
-                                ');
-                    redirect('karyawan');
+                $this->m_karyawan->aktivasi_karyawan('tb_karyawan',$nik);
+                $this->session->set_flashdata('message_aktivasi_karyawan','
+                            <div class="alert alert-info alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                                </button>
+                                Data Berhasil Diaktivasi!
+                            </div>
+                            ');
+                redirect('karyawan');
 
-                }
-            
+            }     
         }
 
         public function edit($id){
 
-            $id_karyawan = $this->session->userdata('id_karyawan');
-            $role_user = $this->session->userdata('role_user');
+            if($this->role_karyawan() == 1){
+                $this->goto_edit($id);
+            }else{
+                if($id == $this->id_karyawan()){
+                    $this->goto_edit($id);
+                }else{
+                    redirect('auth/login_exist');
+                }
+            }    
+
+        }
+
+        public function goto_edit($id){
+            $where = array(
+                'id_karyawan' => $id,
+            );
+            $where_session = array(
+                'id_karyawan' => $this->id_karyawan(),
+            );
+
+            $data['ui_karyawan'] 	= $this->m_karyawan->get_ui_karaywan($where_session);
+
+
+            $data['sidebar'] = $this->m_sidebar->data_sidebar($this->role_karyawan())->result();
+            $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan_where_id($where);
+            $data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
+            $data['notif_sidebar'] = $this->m_sidebar->notif_sidebar();
+            $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
+            $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
 
             
-            if ($id_karyawan === null) {
-                    redirect('auth/login');
-                } else {
+            $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($this->id_karyawan());
+            
 
 
-                    $where = array(
-                        'id_karyawan' => $id,
-                    );
-
-                    $data['ui_karyawan'] 	= $this->m_karyawan->get_ui_karaywan($where);
-
-
-                    $data['sidebar'] = $this->m_sidebar->data_sidebar($role_user)->result();
-                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan_where_id($where);
-                    $data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
-                    $data['notif_sidebar'] = $this->m_sidebar->notif_sidebar();
-                    $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
-                    $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
-
-                    
-                    $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
-
-                
-                    
-                    $this->load->view('templates/header',$data);;
-                    $this->load->view('templates/sidebar',$data);
-                    $this->load->view('edit/edit_karyawan',$data);
-                    $this->load->view('templates/footer');
-
-                }
+        
+            
+            $this->load->view('templates/header',$data);;
+            $this->load->view('templates/sidebar',$data);
+            $this->load->view('edit/edit_karyawan',$data);
+            $this->load->view('templates/footer');
         }
 
         public function update(){
@@ -336,46 +359,45 @@
 
             $id_karyawan = $this->session->userdata('id_karyawan');
             if ($id_karyawan === null) {
-                    redirect('auth/login');
-                } else {
+                redirect('auth/login');
+            } else {
+                $id                 = $this->input->post('id_karyawan');
+                $nik                = $this->input->post('nik_karyawan');
+                $nama               = $this->input->post('nama_karyawan');
+                $email              = $this->input->post('email_karyawan');
+                $tgl_lahir          = $this->input->post('tgl_lahir');
+                $alamat             = $this->input->post('alamat_karyawan');
+                $jabatan            = $this->input->post('kode_jabatan');
+                $jenis_kelamin      = $this->input->post('jenis_kelamin');
+                $status_karyawan = 1; // aktif
 
-                    $id                 = $this->input->post('id_karyawan');
-                    $nik                = $this->input->post('nik_karyawan');
-                    $nama               = $this->input->post('nama_karyawan');
-                    $email              = $this->input->post('email_karyawan');
-                    $tgl_lahir          = $this->input->post('tgl_lahir');
-                    $alamat             = $this->input->post('alamat_karyawan');
-                    $jabatan            = $this->input->post('kode_jabatan');
-                    $jenis_kelamin      = $this->input->post('jenis_kelamin');
-                    $status_karyawan = 1; // aktif
 
+                $data       = array(
+                    'nik_karyawan'      => $nik,
+                    'email_karyawan'    => $email,
+                    'nama_karyawan'     => $nama,
+                    'tgl_lahir'         => $tgl_lahir,
+                    'alamat_karyawan'   => $alamat,
+                    'kode_jabatan'      => $jabatan,
+                    'kode_status'       => $status_karyawan,
+                    'jenis_kelamin'     => $jenis_kelamin,
+                    'updated_at'        => 'belum ada'
+                );
 
-                    $data       = array(
-                        'nik_karyawan'      => $nik,
-                        'email_karyawan'    => $email,
-                        'nama_karyawan'     => $nama,
-                        'tgl_lahir'         => $tgl_lahir,
-                        'alamat_karyawan'   => $alamat,
-                        'kode_jabatan'      => $jabatan,
-                        'kode_status'       => $status_karyawan,
-                        'jenis_kelamin'     => $jenis_kelamin,
-                        'updated_at'        => 'belum ada'
-                    );
+                $where      = array(
+                    'id_karyawan'       => $id
+                );
 
-                    $where      = array(
-                        'id_karyawan'       => $id
-                    );
-
-                    $this->m_karyawan->update_data($where,$data,'tb_karyawan');
-                    $this->session->set_flashdata('message_update_karyawan','
-                                <div class="alert alert-warning alert-dismissible" role="alert">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-                                    </button>
-                                    Data Berhasil Diupdate!
-                                </div>
-                                ');
-                    redirect('admin/karyawan');
-                }
+                $this->m_karyawan->update_data($where,$data,'tb_karyawan');
+                $this->session->set_flashdata('message_update_karyawan','
+                            <div class="alert alert-warning alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                                </button>
+                                Data Berhasil Diupdate!
+                            </div>
+                            ');
+                redirect('admin/karyawan');
+            }
         }
 
         public function detail($id){
@@ -393,14 +415,13 @@
                         'id_karyawan' => $id
                     );
 
-                    $detail = $this->m_karyawan->detail_data($where);
-                    $data['detail'] = $detail;
-
-                    $where = array(
+                    $where_session = array(
                         'id_karyawan' => $id_karyawan
                     );
-                    $data['ui_karyawan'] 	= $this->m_karyawan->get_ui_karaywan($where);
+                    $data['ui_karyawan'] 	= $this->m_karyawan->get_ui_karaywan($where_session);
 
+                    $detail = $this->m_karyawan->detail_data($where);
+                    $data['detail'] = $detail;
                     $data['sidebar'] = $this->m_sidebar->data_sidebar($role_user)->result();
                     $data['karyawan'] = $this->m_karyawan->detail_karyawan_with_jabatan_where_id($where);
                     $data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
@@ -410,6 +431,8 @@
 
                     
                     $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
+                    
+
 
 
                     
@@ -423,69 +446,82 @@
         }
 
         public function print(){
-            $id_karyawan = $this->session->userdata('id_karyawan');
-            if ($id_karyawan === null) {
-                    redirect('auth/login');
+            
+            if($this->role_karyawan() == 1){
+                $selectedId = array(11,12,13);
+                if (empty($selectedId)) {
+                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan_all();
+                    $this->load->view('print/print_karyawan', $data);
                 } else {
-
-                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan();
-
-                    $this->load->view('print/print_karyawan',$data);
-
+                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan($selectedId);
+                    $this->load->view('print/print_karyawan', $data);
                 }
+            }else{
+                redirect('auth/login_exist');
+            }
         }
 
         public function print_detail($id){
-            $id_karyawan = $this->session->userdata('id_karyawan');
-            if ($id_karyawan === null) {
-                    redirect('auth/login');
-                } else {
 
-                    $data['karyawan'] = $this->m_karyawan->print_karyawan_with_jabatan($id_karyawan)->row();
-                    $data['list_karyawan'] = $this->m_karyawan->print_karyawan_with_jabatan($id_karyawan)->result();
-                    
-
-                    $this->load->view('print/print_karyawan_detail',$data);
-
+            if($this->role_karyawan() == 1){
+                $this->goto_print($id);
+            }else{
+                if($id == $this->id_karyawan()){
+                    $this->goto_print($id);
+                }else{
+                    redirect('auth/login_exist');
                 }
+            }    
+        }
+
+        public function goto_print($id){
+            $data['karyawan'] = $this->m_karyawan->print_karyawan_with_jabatan($id)->row();
+            $data['list_karyawan'] = $this->m_karyawan->print_karyawan_with_jabatan($id)->result();
+            $this->load->view('print/print_karyawan_detail',$data);
         }
 
         public function export_pdf(){
 
-            $id_karyawan = $this->session->userdata('id_karyawan');
-            if ($id_karyawan === null) {
-                    redirect('auth/login');
+            if($this->role_karyawan() == 1){
+                $selectedId = array(11,12,13);
+
+                $this->load->library('dompdf_gen');
+                
+                if (empty($selectedId)) {
+                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan_all();
                 } else {
-
-                    $this->load->library('dompdf_gen');
-
-                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan();
-
-                    $this->load->view('export_pdf/laporan_pdf',$data);
-
-                    $paper_size = 'A4';
-                    $orientation = 'landscape';
-                    $html = $this->output->get_output();
-                    $this->dompdf->set_paper($paper_size,$orientation);
-
-                    $this->dompdf->load_html($html);
-                    $this->dompdf->render();
-                    $this->dompdf->stream('Laporan_Karyawan.pdf',array('Attachment' => 0));
+                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan($selectedId);
                 }
+
+                $this->load->view('export_pdf/laporan_pdf',$data);
+
+                $paper_size = 'A4';
+                $orientation = 'landscape';
+                $html = $this->output->get_output();
+                $this->dompdf->set_paper($paper_size,$orientation);
+
+                $this->dompdf->load_html($html);
+                $this->dompdf->render();
+                $this->dompdf->stream('Laporan_Karyawan.pdf',array('Attachment' => 0));
+            }else{
+                redirect('auth/login_exist');
+            }
+
 
         }
 
         
         
         public function export_excel(){
-
-        $id_karyawan = $this->session->userdata('id_karyawan');
-        if ($id_karyawan === null) {
-                redirect('auth/login');
-            } else {
-
-                $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan();
-
+            
+            if($this->role_karyawan() == 1){
+                $selectedId = array(11,12,13);
+                
+                if (empty($selectedId)) {
+                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan_all();
+                } else {
+                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan($selectedId);
+                }
                 require(APPPATH.'PHPExcel-1.8/Classes/PHPExcel.php');
                 require(APPPATH.'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
 
@@ -525,30 +561,35 @@
                 $no = 1;
 
                 foreach ($data['karyawan'] as $krw) {
-                        $object->getActiveSheet()->setCellValueExplicit('A'.$baris, $no++, PHPExcel_Cell_DataType::TYPE_NUMERIC);
-                        $object->getActiveSheet()->setCellValueExplicit('B'.$baris, $krw->nik_karyawan);
-                        $object->getActiveSheet()->setCellValueExplicit('C'.$baris, $krw->email_karyawan);
-                        $object->getActiveSheet()->setCellValueExplicit('D'.$baris, $krw->nama_karyawan);
-                        $object->getActiveSheet()->setCellValueExplicit('E'.$baris, $krw->tgl_lahir);
-                        $object->getActiveSheet()->setCellValueExplicit('F'.$baris, $krw->alamat_karyawan);
-                        $object->getActiveSheet()->setCellValueExplicit('G'.$baris, $krw->desc_jabatan);
-                        $object->getActiveSheet()->setCellValueExplicit('H'.$baris, $krw->jenis_kelamin);
+                    $object->getActiveSheet()->setCellValueExplicit('A'.$baris, $no++, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+                    $object->getActiveSheet()->setCellValueExplicit('B'.$baris, $krw->nik_karyawan);
+                    $object->getActiveSheet()->setCellValueExplicit('C'.$baris, $krw->email_karyawan);
+                    $object->getActiveSheet()->setCellValueExplicit('D'.$baris, $krw->nama_karyawan);
+                    $object->getActiveSheet()->setCellValueExplicit('E'.$baris, $krw->tgl_lahir);
+                    $object->getActiveSheet()->setCellValueExplicit('F'.$baris, $krw->alamat_karyawan);
+                    $object->getActiveSheet()->setCellValueExplicit('G'.$baris, $krw->desc_jabatan);
+                    $object->getActiveSheet()->setCellValueExplicit('H'.$baris, $krw->jenis_kelamin);
 
-                        $object->getActiveSheet()->getStyle('A'.$baris.':H'.$baris)->applyFromArray($dataStyle);
+                    $object->getActiveSheet()->getStyle('A'.$baris.':H'.$baris)->applyFromArray($dataStyle);
 
-                        $baris++;
-                    }
-
-                    $filename = "Data Karyawan Aktif.xlsx";
-                    $object->getActiveSheet()->setTitle("Data Karyawan Aktif");
-
-                    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                    header('Content-Disposition: attachment; filename="'.$filename.'"');
-
-                    $writer = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
-                    $writer->save('php://output');
-                    exit;
+                    $baris++;
                 }
+
+                $filename = "Data Karyawan Aktif.xlsx";
+                $object->getActiveSheet()->setTitle("Data Karyawan Aktif");
+
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment; filename="'.$filename.'"');
+
+                $writer = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+                $writer->save('php://output');
+                exit;
+            }else{
+                redirect('auth/login_exist');
+            }
+
+            
+            
         }
 
         public function search(){
@@ -580,6 +621,8 @@
 
                     
                     $data['count_acc_friend'] 	= $this->m_karyawan->count_acc_friend($id_karyawan);
+                    
+
 
 
                     
@@ -620,16 +663,18 @@
                     $data['get_ui_profile'] 	= $this->m_karyawan->get_ui_profile($where_data);
 
                     $data['sidebar'] = $this->m_sidebar->data_sidebar($role_user)->result();
-                    $data['karyawan'] = $this->m_karyawan->get_karyawan_with_jabatan();
+                    $data['karyawan'] = $this->m_karyawan->get_karyawan_profile();
                     $data['jabatan'] = $this->m_karyawan->tampil_jabatan()->result();
                     $data['notif_sidebar'] = $this->m_sidebar->notif_sidebar();
                     $data['count_user_online'] 	= $this->m_karyawan->count_karyawan_online();
                     $data['karyawan_online'] = $this->m_karyawan->get_karyawan_online();
                     $data['about_me'] = $this->m_karyawan->about_me($where_data);
-                    
                     $data['acc_friend'] = $this->m_karyawan->acc_friend($id_karyawan);
+                    
 
                     $data['id_karyawan'] = $id_karyawan = $this->session->userdata('id_karyawan');
+                    
+
 
                     if($id == $id_karyawan){
                         $data['hide_setting'] = true;

@@ -44,7 +44,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-            <table id="myTable" class="table table table-bordered table-hover" style="width: 100%;">
+            <table id="myTable" class="display nowrap" style="width: 100%">
               <thead>
                 <tr>
                     <th>ID Supplier</th>
@@ -68,7 +68,6 @@
                     <th>Ship Via Code</th>
                     <th>Approved</th>
                     <th>Status</th>
-                    <th colspan="2">Aksi</th>
                 </tr>
               </thead>
             </table>

@@ -14,14 +14,57 @@
 
         }
 
-        public function get_karyawan_with_jabatan(){
+        public function get_karyawan_with_jabatan($dinamic_id){
 
             $status_karyawan = 1;
+
+            
+
+            $where = array(
+                'kode_status'=> $status_karyawan,
+            );
 
             $this->db->select('tb_karyawan.id_karyawan,tb_karyawan.nik_karyawan,tb_karyawan.jenis_kelamin,tb_karyawan.email_karyawan, , tb_karyawan.nama_karyawan, tb_karyawan.tgl_lahir, tb_karyawan.alamat_karyawan, tb_karyawan.kode_jabatan, tb_jabatan.desc_jabatan');
             $this->db->from('tb_karyawan');
             $this->db->join('tb_jabatan', 'tb_karyawan.kode_jabatan = tb_jabatan.kode_jabatan', 'inner');
-            $this->db->where('kode_status', $status_karyawan);
+            $this->db->where_in('tb_karyawan.id_karyawan', $dinamic_id);
+            $query = $this->db->get();
+            return $query->result();
+
+        }
+
+        public function get_karyawan_with_jabatan_all(){
+
+            $status_karyawan = 1;
+
+            
+
+            $where = array(
+                'kode_status'=> $status_karyawan,
+            );
+
+            $this->db->select('tb_karyawan.id_karyawan,tb_karyawan.nik_karyawan,tb_karyawan.jenis_kelamin,tb_karyawan.email_karyawan, , tb_karyawan.nama_karyawan, tb_karyawan.tgl_lahir, tb_karyawan.alamat_karyawan, tb_karyawan.kode_jabatan, tb_jabatan.desc_jabatan');
+            $this->db->from('tb_karyawan');
+            $this->db->join('tb_jabatan', 'tb_karyawan.kode_jabatan = tb_jabatan.kode_jabatan', 'inner');
+            $this->db->where($where);
+            $query = $this->db->get();
+            return $query->result();
+
+        }
+
+        public function get_karyawan_profile(){
+
+            $status_karyawan = 1;
+
+            
+
+            $where = array(
+                'kode_status'=> $status_karyawan,
+            );
+
+            $this->db->select('tb_karyawan.id_karyawan,tb_karyawan.nik_karyawan,tb_karyawan.jenis_kelamin,tb_karyawan.email_karyawan, , tb_karyawan.nama_karyawan, tb_karyawan.tgl_lahir, tb_karyawan.alamat_karyawan, tb_karyawan.kode_jabatan, tb_jabatan.desc_jabatan');
+            $this->db->from('tb_karyawan');
+            $this->db->join('tb_jabatan', 'tb_karyawan.kode_jabatan = tb_jabatan.kode_jabatan', 'inner');
             $query = $this->db->get();
             return $query->result();
 
@@ -34,7 +77,7 @@
                 'id_karyawan'       =>$id
             );
 
-            $this->db->select('tb_karyawan.id_karyawan,tb_karyawan.nik_karyawan,tb_karyawan.jenis_kelamin,tb_karyawan.email_karyawan, , tb_karyawan.nama_karyawan, tb_karyawan.tgl_lahir, tb_karyawan.alamat_karyawan, tb_karyawan.kode_jabatan, tb_jabatan.desc_jabatan');
+            $this->db->select('*');
             $this->db->from('tb_karyawan');
             $this->db->join('tb_jabatan', 'tb_karyawan.kode_jabatan = tb_jabatan.kode_jabatan', 'inner');
             $this->db->where($where);

@@ -4,7 +4,7 @@
 
         public function tampil_supplier(){
 
-            return $this->db->get('tb_jabatan');
+            return $this->db->get('tb_supplier');
 
         }
 

@@ -50,13 +50,20 @@
             </tr>
 
         </table>
+
         
-        <?php if ($karyawan->role_user != 1): ?>
-            <?php echo anchor('karyawan/print_detail/'.$karyawan->id_karyawan,'Print Karyawan', 'class="btn btn-danger"') ?>
-            <?php echo anchor('karyawan/edit/'.$karyawan->id_karyawan,'Ubah Data', 'class="btn btn-primary"') ?>
-        <?php else: ?>
-            <a href="<?php echo base_url('karyawan') ?>" class="btn btn-primary">Kembali</a>
+
+        
+        <?php $goto = '' ?>
+        <?php if ($this->session->userdata('role_user') == 1): ?>
+            <?php $goto = 'karyawan' ?>
+        <?php elseif ($this->session->userdata('id_karyawan') == $karyawan->id_karyawan): ?>
+            <?php $goto = 'admin' ?>
         <?php endif; ?>
+        
+        <a href="<?php echo base_url($goto) ?>" class="btn btn-danger">Kembali</a>
+        <?php echo anchor('karyawan/edit/'.$karyawan->id_karyawan,'Ubah Data', 'class="btn btn-primary"') ?>
+        <?php echo anchor('karyawan/print_detail/'.$karyawan->id_karyawan,'Print Karyawan', 'class="btn btn-warning"') ?>
 
     </section>
 </div>

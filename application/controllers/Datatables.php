@@ -33,13 +33,33 @@
 
         function view_data()
         {
-            $tables = "tb_jabatan";
-            $search = array('kode_jabatan','desc_jabatan','gaji_jabatan','recruitment');
+            $tables = "tb_karyawan";
+            $search = array(
+                'id_karyawan',
+                'nik_karyawan',
+                'email_karyawan',
+                'nama_karyawan',
+                'tgl_lahir',
+                'alamat_karyawan',
+                'kode_jabatan',
+                'kode_status',
+                'jenis_kelamin',
+                'foto_karyawan',
+                'password',
+                'role_user',
+                'created_at',
+                'created_by',
+                'updated_at',
+                'updated_by',
+                'last_login',
+                'status_login',
+            );
             // jika memakai IS NULL pada where sql
             $isWhere = null;
+            $where  = array('kode_status' => 1);
             // $isWhere = 'artikel.deleted_at IS NULL';
             header('Content-Type: application/json');
-            echo $this->M_Datatables->get_tables($tables,$search,$isWhere);
+            echo $this->M_Datatables->get_tables_where($tables,$search,$where,$isWhere);
         }
 
         function view_data_where()

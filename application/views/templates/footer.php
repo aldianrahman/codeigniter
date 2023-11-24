@@ -248,34 +248,29 @@
 
 <!-- page script -->
 <script>
-  $(function () {
+  $(document).ready(function () {
     $('#datatables-dt').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : true
-    })
-  })
-</script>
-
-<script>
-  $(function () {
-    $('#supplier_dt').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : true
-    })
-  })
+      "scrollX" : true,
+        "ajax": {
+            "url": "data_jabatan", // Ganti dengan URL ke controller dan method yang menyajikan data
+            "type": "POST", // Sesuaikan dengan metode pengiriman data yang digunakan oleh Anda
+            "dataType": "json",
+            "dataSrc": "data_jabatan"
+        },
+        "columns": [
+            { "data": "kode_jabatan" },
+            { "data": "desc_jabatan" },
+            { "data": "gaji_jabatan" },
+            { "data": "recruitment" },
+        ]
+    });
+  });
 </script>
 
 <script>
   $(document).ready(function () {
     $('#myTable').DataTable({
+      "scrollX" : true,
         "ajax": {
             "url": "data_supplier", // Ganti dengan URL ke controller dan method yang menyajikan data
             "type": "POST", // Sesuaikan dengan metode pengiriman data yang digunakan oleh Anda
@@ -294,6 +289,7 @@
             { "data": "negara_vendor" },
             { "data": "npwp_vendor" },
             { "data": "top_vendor" },
+            { "data": "fax_vendor" },
             { "data": "currency_vendor" },
             { "data": "created_at" },
             { "data": "created_by" },
@@ -310,11 +306,10 @@
 </script>
 
 <script> 
-
-	// Initialize the DataTable 
+  // Initialize the DataTable 
 	  var tabel = null;
     $(document).ready(function() {
-        tabel = $('#table-artikel').DataTable({
+        tabel = $('#table-karyawan').DataTable({
             "processing": true,
             "responsive":true,
             "serverSide": true,
@@ -329,41 +324,147 @@
             "deferRender": true,
             "aLengthMenu": [[5, 10, 50],[ 5, 10, 50]], // Combobox Limit
             "columns": [
-                {"data": 'kode_jabatan',"sortable": false, 
+                {
+                  "data": "id_karyawan","sortable": false,
+                  render: function (data, type, row, meta) {
+                    // Generate unique ID for each checkbox
+                    var checkboxId = "karyawanCheckbox_" + meta.row;
+
+                    return '<input value=' + data + ' type="checkbox" id="' + checkboxId + '" onchange="ambilIdKaryawan(\'' + checkboxId + '\')">';
+                  }
+                },
+                {"data": 'id_karyawan',"sortable": false, 
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }  
                 },
-                { "data": "kode_jabatan" }, // Tampilkan judul
-                { "data": "desc_jabatan" },  // Tampilkan kategori
+                { "data": "id_karyawan" }, // Tampilkan judul
+                { "data": "nik_karyawan" },  // Tampilkan kategori
                 { 
-                "data": "gaji_jabatan",  
-                "render": function(data, type, row, meta) {
-                    // Memformat angka menjadi mata uang Rupiah
-                    return 'Rp. ' + parseInt(data).toLocaleString('id-ID');
-                }
-            },  // Tampilkan penulis
-            { "data": "recruitment",
-                    render: function(data, type, row, meta) {
-                        if (data == 0) {
-                            return '<button type="button" class="btn btn-danger">Tutup</button>';
-                        } else if (data == 1) {
-                            return '<button type="button" class="btn btn-success">Buka</button>';
-                        } else {
-                            return 'Undefined';
-                        }
-                    }
+                "data": "email_karyawan",  
+                // "render": function(data, type, row, meta) {
+                //     // Memformat angka menjadi mata uang Rupiah
+                //     return 'Rp. ' + parseInt(data).toLocaleString('id-ID');
+                // }
                 },  // Tampilkan penulis
-                { "data": "kode_jabatan",
+                { "data": "nama_karyawan",
+                    // render: function(data, type, row, meta) {
+                    //     if (data == 0) {
+                    //         return '<button type="button" class="btn btn-danger">Tutup</button>';
+                    //     } else if (data == 1) {
+                    //         return '<button type="button" class="btn btn-success">Buka</button>';
+                    //     } else {
+                    //         return 'Undefined';
+                    //     }
+                    // }
+                },  // Tampilkan penulis
+                { "data": "tgl_lahir",
+                    // "render": 
+                    // function( data, type, row, meta ) {
+                    //     return '<a href="show/'+data+'">Show</a>';
+                    // }
+                },
+                { "data": "alamat_karyawan" },  // Tampilkan kategori
+                { "data": "kode_jabatan" },  // Tampilkan kategori
+                { "data": "kode_status" },  // Tampilkan kategori
+                { "data": "jenis_kelamin" },  // Tampilkan kategori
+                { "data": "foto_karyawan" },  // Tampilkan kategori
+                { "data": "password" },  // Tampilkan kategori
+                { "data": "role_user" },  // Tampilkan kategori
+                { "data": "created_at" },  // Tampilkan kategori
+                { "data": "created_by" },  // Tampilkan kategori
+                { "data": "updated_at" },  // Tampilkan kategori
+                { "data": "updated_by" },  // Tampilkan kategori
+                { "data": "last_login" },  // Tampilkan kategori
+                { "data": "status_login" },  // Tampilkan kategori
+                { "data": "id_karyawan",
                     "render": 
                     function( data, type, row, meta ) {
-                        return '<a href="show/'+data+'">Show</a>';
-                    }
-                },
+                        return '<a href="<?php echo base_url() ?>karyawan/detail/'+data+'" class="btn btn-success btn-sm"><i class="fa fa-search"></i></a> <a href="<?php echo base_url() ?>karyawan/edit/'+data+'" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a> <a href="<?php echo base_url() ?>karyawan/hapus/'+data+'" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a> ';
+                    } 
+                },  // Tampilkan kategori
             ],
         });
     });
 </script> 
+
+<script>
+  // Inisialisasi array untuk menyimpan id_karyawan yang tercentang
+  var selectedKaryawan = [];
+
+  function ambilIdKaryawan(checkboxId,checkboxAll = false) {
+    // Mendapatkan elemen checkbox
+    var checkbox = document.getElementById(checkboxId);
+    var valueKaryawan = checkbox.value;  // Gantilah dengan nilai id_karyawan yang sesuai
+
+    // Jika checkbox dicentang, tambahkan nilai id_karyawan ke dalam array
+    if (checkbox.checked) {
+      console.log("Id Karyawan yang diambil:", valueKaryawan);
+      selectedKaryawan.push(valueKaryawan);
+    } else {
+      // Jika checkbox tidak dicentang, hapus nilai id_karyawan dari array (jika ada)
+      var index = selectedKaryawan.indexOf(valueKaryawan);
+      if (index !== -1) {
+        selectedKaryawan.splice(index, 1);
+      }
+    }
+
+    // Menampilkan array id_karyawan yang tercentang saat ini
+
+    // Lakukan tindakan lain dengan array id_karyawan
+    // Misalnya, kirim array ini ke server atau lakukan operasi lain.
+  }
+
+  function handlePrintButtonClick() {
+    // Assuming you want to print when at least one employee is selected
+    if (selectedKaryawan.length > 0) {
+      console.log("Id Karyawan yang tercentang:", selectedKaryawan);
+    } else {
+      // Inform the user that no employees are selected
+      console.log('No employees selected for printing');
+    }
+
+  }
+
+  var btnPrint = document.getElementById('btnPrint');
+  btnPrint.addEventListener('click', handlePrintButtonClick);
+
+
+  var checkboxAll = document.getElementById('all');
+
+  // Tambahkan event listener untuk menanggapi perubahan status checkbox
+  checkboxAll.addEventListener('change', function () {
+    // Ambil nilai (value) checkbox
+    var checkboxValue = checkboxAll.checked;
+
+    // Mendapatkan semua elemen checkbox dalam dokumen
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    // Mengatur properti checked dari setiap checkbox sesuai dengan nilai checkboxValue
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = checkboxValue;
+
+      // Jika checkbox dicentang, tambahkan nilai id_karyawan ke dalam array
+      if (checkboxValue) {
+        var valueKaryawan = checkbox.value;
+        selectedKaryawan.push(valueKaryawan);
+      } else {
+        // Jika checkbox tidak dicentang, hapus nilai id_karyawan dari array (jika ada)
+        var index = selectedKaryawan.indexOf(checkbox.value);
+        if (index !== -1) {
+          selectedKaryawan.splice(index, 1);
+        }
+      }
+    });
+
+    // Menampilkan array id_karyawan yang tercentang saat ini
+    console.log('Id Karyawan yang tercentang saat ini:', selectedKaryawan);
+  });
+
+
+
+
+</script>
 
 </body>
 </html>
